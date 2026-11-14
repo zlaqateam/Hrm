@@ -169,8 +169,28 @@ function EmployeeForm({ initial, onClose, departments, profiles }: { initial: Pa
   }
 
   return (
-    <Modal open onClose={onClose} title={isNew ? 'Add employee' : `Edit · ${initial.full_name}`} wide>
-      <div className="grid gap-3 md:grid-cols-2">
+    <Modal
+      open
+      onClose={onClose}
+      title={isNew ? 'Add employee' : `Edit · ${initial.full_name}`}
+      wide
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose} disabled={busy}>
+              Cancel
+            </Button>
+            <Button onClick={save} disabled={busy}>
+              {busy ? 'Saving…' : isNew ? 'Create login' : 'Save'}
+            </Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="grid gap-3.5 md:grid-cols-2">
         <Field label="Full name">
           <Input value={f.full_name} onChange={(e) => set('full_name', e.target.value)} />
         </Field>
@@ -229,17 +249,6 @@ function EmployeeForm({ initial, onClose, departments, profiles }: { initial: Pa
             </Select>
           </Field>
         )}
-      </div>
-      <div className="mt-4 space-y-3">
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={save} disabled={busy}>
-            {busy ? 'Saving…' : isNew ? 'Create login' : 'Save'}
-          </Button>
-        </div>
       </div>
     </Modal>
   );

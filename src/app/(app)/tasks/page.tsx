@@ -161,8 +161,25 @@ function NewTask({ onClose }: { onClose: () => void }) {
   }
 
   return (
-    <Modal open onClose={onClose} title="New task">
-      <div className="space-y-3">
+    <Modal
+      open
+      onClose={onClose}
+      title="New task"
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={save}>Create task</Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-3.5">
         <Field label="Title">
           <Input value={title} onChange={(e) => setTitle(e.target.value)} autoFocus />
         </Field>
@@ -199,13 +216,6 @@ function NewTask({ onClose }: { onClose: () => void }) {
               ))}
             </Select>
           </Field>
-        </div>
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={save}>Create task</Button>
         </div>
       </div>
     </Modal>

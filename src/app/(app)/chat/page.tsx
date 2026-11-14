@@ -230,8 +230,25 @@ function NewChannel({ onClose, onCreated, departments, profiles }: { onClose: ()
   }
 
   return (
-    <Modal open onClose={onClose} title="New channel">
-      <div className="space-y-3">
+    <Modal
+      open
+      onClose={onClose}
+      title="New channel"
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={save}>Create</Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-3.5">
         <Field label="Name">
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. product-launch" />
         </Field>
@@ -268,13 +285,6 @@ function NewChannel({ onClose, onCreated, departments, profiles }: { onClose: ()
               ))}
           </div>
         )}
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={save}>Create</Button>
-        </div>
       </div>
     </Modal>
   );

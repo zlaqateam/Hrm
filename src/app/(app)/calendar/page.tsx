@@ -227,21 +227,31 @@ function AddHoliday({ onClose }: { onClose: () => void }) {
     }
   }
   return (
-    <Modal open onClose={onClose} title="Add holiday">
-      <div className="space-y-3">
+    <Modal
+      open
+      onClose={onClose}
+      title="Add holiday"
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={save}>Add</Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-3.5">
         <Field label="Date">
           <Input type="date" value={date} onChange={(e) => setDate(e.target.value)} />
         </Field>
         <Field label="Name">
           <Input value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Onam" />
         </Field>
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={save}>Add</Button>
-        </div>
       </div>
     </Modal>
   );

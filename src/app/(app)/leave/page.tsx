@@ -151,8 +151,25 @@ function Apply({ onClose, profiles }: { onClose: () => void; profiles: import('@
   }
 
   return (
-    <Modal open onClose={onClose} title="Apply for leave">
-      <div className="space-y-3">
+    <Modal
+      open
+      onClose={onClose}
+      title="Apply for leave"
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={save}>Submit</Button>
+          </div>
+        </div>
+      }
+    >
+      <div className="space-y-3.5">
         <Field label="Type">
           <Select value={type} onChange={(e) => setType(e.target.value)}>
             {settings.leave_types.map((t) => (
@@ -169,7 +186,7 @@ function Apply({ onClose, profiles }: { onClose: () => void; profiles: import('@
           </Field>
         </div>
         {from && from === to && (
-          <label className="flex items-center gap-2 text-sm">
+          <label className="flex items-center gap-2 text-sm text-neutral-700">
             <input type="checkbox" checked={half} onChange={(e) => setHalf(e.target.checked)} /> Half day
           </label>
         )}
@@ -179,13 +196,6 @@ function Apply({ onClose, profiles }: { onClose: () => void; profiles: import('@
         <p className="text-sm text-neutral-600">
           Working days: <b>{days}</b>
         </p>
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={save}>Submit</Button>
-        </div>
       </div>
     </Modal>
   );

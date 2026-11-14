@@ -292,28 +292,53 @@ function Settings() {
 
 function ListEditor({ label, items, onChange, placeholder }: { label: string; items: string[]; onChange: (v: string[]) => void; placeholder: string }) {
   const [v, setV] = useState('');
+  const add = () => {
+    if (v.trim() && !items.includes(v.trim())) {
+      onChange([...items, v.trim()]);
+      setV('');
+    }
+  };
   return (
     <Field label={label}>
-      <div className="flex flex-wrap gap-2">
-        {items.map((i) => (
-          <Badge key={i} className="py-1 text-xs">
-            {i}
-            <button type="button" onClick={() => onChange(items.filter((x) => x !== i))} aria-label={`Remove ${i}`}>
-              <X size={12} />
-            </button>
-          </Badge>
-        ))}
-        <div className="flex gap-1">
-          <Input className="w-36 py-1" placeholder={placeholder} value={v} onChange={(e) => setV(e.target.value)} />
+      <div className="space-y-2">
+        <div className="flex flex-wrap items-center gap-2">
+          {items.map((i) => (
+            <Badge key={i} className="py-1 text-xs">
+              {i}
+              <button
+                type="button"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onChange(items.filter((x) => x !== i));
+                }}
+                className="ml-1 text-neutral-400 hover:text-neutral-700"
+                aria-label={`Remove ${i}`}
+              >
+                <X size={12} />
+              </button>
+            </Badge>
+          ))}
+        </div>
+        <div className="flex max-w-xs items-center gap-1.5">
+          <Input
+            className="h-9 py-1 text-xs"
+            placeholder={placeholder}
+            value={v}
+            onChange={(e) => setV(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === 'Enter') {
+                e.preventDefault();
+                add();
+              }
+            }}
+          />
           <Button
             size="sm"
             variant="secondary"
-            onClick={() => {
-              if (v.trim() && !items.includes(v.trim())) onChange([...items, v.trim()]);
-              setV('');
-            }}
+            onClick={add}
+            className="h-9 shrink-0 px-3"
           >
-            <Plus size={14} />
+            <Plus size={14} /> Add
           </Button>
         </div>
       </div>

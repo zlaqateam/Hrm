@@ -93,7 +93,27 @@ export function ObjectiveModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="New objective" wide>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="New objective"
+      wide
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={save} disabled={busy}>
+              {busy ? 'Saving…' : 'Create objective'}
+            </Button>
+          </div>
+        </div>
+      }
+    >
       <div className="space-y-4">
         <Field label="Objective">
           <Input placeholder="e.g. Launch the therapy dashboard to 50 clinics" value={title} onChange={(e) => setTitle(e.target.value)} />
@@ -156,15 +176,6 @@ export function ObjectiveModal({
         <div>
           <div className="mb-2 text-xs font-medium text-neutral-600">Key results</div>
           <KrEditor value={krs} onChange={setKrs} />
-        </div>
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={save} disabled={busy}>
-            {busy ? 'Saving…' : 'Create objective'}
-          </Button>
         </div>
       </div>
     </Modal>
@@ -261,7 +272,27 @@ export function ApplyTemplateModal({
   }
 
   return (
-    <Modal open={open} onClose={onClose} title="Apply OKR template" wide>
+    <Modal
+      open={open}
+      onClose={onClose}
+      title="Apply OKR template"
+      wide
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose}>
+              Cancel
+            </Button>
+            <Button onClick={apply} disabled={busy || !t}>
+              {busy ? `Creating… ${done}/${selected.length}` : `Create OKRs for ${selected.length} people`}
+            </Button>
+          </div>
+        </div>
+      }
+    >
       <div className="space-y-4">
         <div className="grid gap-3 md:grid-cols-2">
           <Field label="Template">
@@ -313,15 +344,6 @@ export function ApplyTemplateModal({
               </label>
             ))}
           </div>
-        </div>
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={apply} disabled={busy || !t}>
-            {busy ? `Creating… ${done}/${selected.length}` : `Create OKRs for ${selected.length} people`}
-          </Button>
         </div>
       </div>
     </Modal>

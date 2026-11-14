@@ -144,7 +144,26 @@ function SendKudos({ onClose, people }: { onClose: () => void; people: { id: str
   }
 
   return (
-    <Modal open onClose={onClose} title="Send kudos">
+    <Modal
+      open
+      onClose={onClose}
+      title="Send kudos"
+      footer={
+        <div className="flex w-full items-center justify-between gap-3">
+          <div className="min-w-0 flex-1">
+            <ErrorNote text={err} />
+          </div>
+          <div className="flex shrink-0 items-center gap-2">
+            <Button variant="secondary" onClick={onClose} disabled={busy}>
+              Cancel
+            </Button>
+            <Button onClick={send} disabled={busy}>
+              <Heart size={16} /> {busy ? 'Sending…' : 'Send kudos'}
+            </Button>
+          </div>
+        </div>
+      }
+    >
       <div className="space-y-4">
         <Field label="To">
           <Select value={to} onChange={(e) => setTo(e.target.value)}>
@@ -174,15 +193,6 @@ function SendKudos({ onClose, people }: { onClose: () => void; people: { id: str
         <Field label="Message" hint={`${message.length}/280`}>
           <Textarea rows={4} value={message} onChange={(e) => setMessage(e.target.value.slice(0, 280))} placeholder="Be specific: what did they do, and why did it matter?" />
         </Field>
-        <ErrorNote text={err} />
-        <div className="flex justify-end gap-2">
-          <Button variant="secondary" onClick={onClose}>
-            Cancel
-          </Button>
-          <Button onClick={send} disabled={busy}>
-            <Heart size={16} /> {busy ? 'Sending…' : 'Send kudos'}
-          </Button>
-        </div>
       </div>
     </Modal>
   );

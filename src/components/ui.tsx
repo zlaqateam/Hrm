@@ -1,6 +1,7 @@
 'use client';
 // Design system. White-first, dark-mode ready, motion built in.
 import { useEffect, useState, type ButtonHTMLAttributes, type InputHTMLAttributes, type ReactNode, type SelectHTMLAttributes, type TextareaHTMLAttributes } from 'react';
+import { createPortal } from 'react-dom';
 import { X } from 'lucide-react';
 import { useAuth } from '@/lib/auth';
 import type { Role } from '@/lib/types';
@@ -67,11 +68,11 @@ export function Textarea(p: TextareaHTMLAttributes<HTMLTextAreaElement>) {
 
 export function Field({ label, children, hint, className }: { label: string; children: ReactNode; hint?: string; className?: string }) {
   return (
-    <label className={cn('block space-y-1', className)}>
-      <span className="text-xs font-medium text-neutral-600">{label}</span>
+    <div className={cn('block space-y-1.5', className)}>
+      <span className="block text-xs font-medium text-neutral-600">{label}</span>
       {children}
       {hint && <span className="block text-xs text-neutral-400">{hint}</span>}
-    </label>
+    </div>
   );
 }
 
@@ -105,7 +106,27 @@ export function Progress({ value, className, showLabel }: { value: number; class
   );
 }
 
-export function Modal({ open, onClose, title, children, wide }: { open: boolean; onClose: () => void; title: ReactNode; children: ReactNode; wide?: boolean }) {
+export function Modal({
+  open,
+  onClose,
+  title,
+  children,
+  wide,
+  footer,
+}: {
+  open: boolean;
+  onClose: () => void;
+  title: ReactNode;
+  children: ReactNode;
+  wide?: boolean;
+  footer?: ReactNode;
+}) {
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   useEffect(() => {
     if (!open) return;
     const h = (e: KeyboardEvent) => e.key === 'Escape' && onClose();
@@ -117,29 +138,47 @@ export function Modal({ open, onClose, title, children, wide }: { open: boolean;
       document.body.style.overflow = prev;
     };
   }, [open, onClose]);
-  if (!open) return null;
-  return (
-    <div className="fixed inset-0 z-50 flex animate-fade-in items-end justify-center bg-black/45 backdrop-blur-[2px] sm:items-center sm:p-4" onMouseDown={onClose}>
+
+  if (!open || !mounted) return null;
+
+  const content = (
+    <div
+      className="fixed inset-0 z-[60] flex animate-fade-in items-end justify-center bg-black/50 p-0 backdrop-blur-sm sm:items-center sm:p-4"
+      onMouseDown={onClose}
+    >
       <div
         className={cn(
-          'max-h-[92dvh] w-full animate-slide-up overflow-y-auto rounded-t-3xl border border-neutral-200 bg-surface p-5 pb-[max(1.25rem,env(safe-area-inset-bottom))] shadow-2xl sm:animate-scale-in sm:rounded-2xl',
+          'relative flex max-h-[92dvh] w-full flex-col animate-slide-up rounded-t-3xl border border-neutral-200 bg-surface shadow-2xl sm:max-h-[88dvh] sm:animate-scale-in sm:rounded-2xl',
           wide ? 'sm:max-w-3xl' : 'sm:max-w-lg',
         )}
         onMouseDown={(e) => e.stopPropagation()}
         role="dialog"
         aria-modal="true"
       >
-        <div className="mx-auto -mt-2 mb-3 h-1 w-10 rounded-full bg-neutral-300 sm:hidden" />
-        <div className="mb-4 flex items-center justify-between gap-3">
-          <h2 className="text-base font-semibold">{title}</h2>
-          <button onClick={onClose} className="rounded-lg p-1 text-neutral-500 hover:bg-neutral-100" aria-label="Close">
+        <div className="mx-auto mt-2 h-1 w-10 shrink-0 rounded-full bg-neutral-300 sm:hidden" />
+        <div className="flex shrink-0 items-center justify-between border-b border-neutral-100 px-5 py-4 sm:px-6">
+          <h2 className="text-base font-semibold text-neutral-900">{title}</h2>
+          <button
+            onClick={onClose}
+            className="rounded-lg p-1 text-neutral-400 transition hover:bg-neutral-100 hover:text-neutral-700"
+            aria-label="Close"
+          >
             <X size={18} />
           </button>
         </div>
-        {children}
+        <div className="flex-1 overflow-y-auto px-5 py-5 sm:px-6">
+          {children}
+        </div>
+        {footer && (
+          <div className="flex shrink-0 items-center justify-end gap-2 border-t border-neutral-100 bg-neutral-50/70 px-5 py-3.5 sm:px-6">
+            {footer}
+          </div>
+        )}
       </div>
     </div>
   );
+
+  return typeof document !== 'undefined' ? createPortal(content, document.body) : null;
 }
 
 function useCountUp(target: number, ms = 800) {
@@ -229,12 +268,12 @@ export function Empty({ text, children, icon }: { text: string; children?: React
 
 export function PageHeader({ title, subtitle, actions }: { title: string; subtitle?: ReactNode; actions?: ReactNode }) {
   return (
-    <div className="mb-6 flex flex-wrap items-end justify-between gap-3">
-      <div className="min-w-0">
+    <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+      <div className="min-w-0 flex-1">
         <h1 className="text-2xl font-semibold tracking-tight sm:text-[28px]">{title}</h1>
         {subtitle && <p className="mt-1 text-sm text-neutral-500">{subtitle}</p>}
       </div>
-      {actions && <div className="flex flex-wrap items-center gap-2">{actions}</div>}
+      {actions && <div className="flex shrink-0 flex-wrap items-center gap-2">{actions}</div>}
     </div>
   );
 }
